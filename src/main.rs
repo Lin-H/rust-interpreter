@@ -1,5 +1,6 @@
-
+#[allow(dead_code)]
 mod token;
+mod lexer;
 
 use self::token::Token;
 
