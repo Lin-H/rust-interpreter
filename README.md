@@ -10,3 +10,16 @@ while let Some(c) = optional {
 
 }
 ```
+
+需要记住lifetime的语法，定义时候书写的顺序
+
+```rs
+pub struct Interpreter<'a> {
+    lexer: Lexer<'a>,
+    current_token: Token
+}
+```
+
+enum类型的变量比较相等，可能需要derive PartialEq
+
+读引用可以有多个，mut引用只能同时有一个，经过修改后的变量的读引用需要重新赋值，或重新获取

@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TokenType {
     INTEGER,
     PLUS,
@@ -12,8 +12,8 @@ pub enum TokenType {
 
 #[derive(Debug)]
 pub struct Token {
-    token: TokenType,
-    value: String
+    pub token: TokenType,
+    pub value: String
 }
 
 impl Token {
