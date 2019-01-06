@@ -1,11 +1,19 @@
+mod interpreter;
+mod lexer;
 #[allow(dead_code)]
 mod token;
-mod lexer;
-mod interpreter;
 
-use self::token::Token;
+use std::io::{self, Write};
 
 fn main() {
-    let t = Token::new(token::TokenType::DIV, "/".to_string());
-    println!("{:?}", t);
+    let mut input = String::new();
+    loop {
+        print!("calc>");
+        io::stdout().flush().unwrap();
+        io::stdin().read_line(&mut input).unwrap();
+        let mut lex = lexer::Lexer::new(&input);
+        let mut my_interpreter = interpreter::Interpreter::new(&mut lex);
+        println!("{:?}", my_interpreter.expr());
+        input.clear();
+    }
 }

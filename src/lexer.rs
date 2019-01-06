@@ -21,7 +21,7 @@ impl<'a> Lexer<'a> {
     // Advance the `pos` pointer and set the `current_char` variable.
     pub fn advance(&mut self) {
         self.pos += 1;
-        let current_char = self.text.nth(self.pos);
+        let current_char = self.text.nth(0); // nth方法会移动迭代器的指针
         self.current_char = current_char;
     }
     pub fn skip_whitespace(&mut self) {
@@ -32,10 +32,11 @@ impl<'a> Lexer<'a> {
     // Return a (multidigit) integer consumed from the input.
     pub fn integer(&mut self) -> String {
         let mut result: String = String::new();
-        let char = self.current_char.unwrap();
-        while char.is_digit(10) {
-            result.push(char);
+        let mut current_char = self.current_char.unwrap();
+        while current_char.is_digit(10) {
+            result.push(current_char);
             self.advance();
+            current_char = self.current_char.unwrap();
         }
         result
     }
@@ -76,7 +77,7 @@ impl<'a> Lexer<'a> {
                 self.advance();
                 return Token::new(TokenType::RPAREN, String::from(")"));
             }
-            panic!("unknow symbol");
+            return Token::new(TokenType::EOF, "".to_string());
         }
         Token::new(TokenType::EOF, "".to_string())
     }
