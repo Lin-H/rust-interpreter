@@ -1,4 +1,4 @@
-# rust-interpreter
+# rust-interpreter [![Build Status](https://travis-ci.com/Lin-H/rust-interpreter.svg?branch=master)](https://travis-ci.com/Lin-H/rust-interpreter)
 interpreter learning
 
 Rust没有null，使用Option枚举类替代，Option的最方便，最好的使用方法还没有找到，每次都用match来进行匹配感觉比较麻烦，全都使用unwrap的话又不好.
