@@ -75,11 +75,11 @@ impl<'a> Interpreter<'a> {
             match self.current_token.token {
                 TokenType::MUL => {
                     self.eat(TokenType::MUL);
-                    result *= self.term();
+                    result *= self.factor();
                 },
                 TokenType::DIV => {
                     self.eat(TokenType::DIV);
-                    result /= self.term();
+                    result /= self.factor();
                 },
                 _ => break
             }
