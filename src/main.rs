@@ -2,6 +2,7 @@ mod interpreter;
 mod lexer;
 #[allow(dead_code)]
 mod token;
+mod parser;
 
 use std::io::{self, Write};
 
