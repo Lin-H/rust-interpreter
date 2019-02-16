@@ -1,6 +1,7 @@
 use super::lexer::Lexer;
 use super::token::Token;
 use super::token::TokenType;
+use super::ast::AST;
 
 pub struct Parser<'a> {
     lexer: &'a mut Lexer<'a>,
@@ -27,12 +28,11 @@ impl<'a> Parser<'a> {
         }
     }
     // factor : INTEGER | LPAREN expr RPAREN
-    pub fn factor(&mut self) -> u32 {
-        let token = &self.current_token;
+    pub fn factor(&mut self) -> AST {
+        let token = self.current_token.clone();
         if token.token == TokenType::INTEGER {
-            let result = token.value.parse::<u32>().unwrap();
             self.eat(TokenType::INTEGER);
-            return result;
+            return AST::new(token, vec![]);
         } else if token.token == TokenType::LPAREN {
             self.eat(TokenType::LPAREN);
             let result = self.expr();
@@ -50,40 +50,44 @@ impl<'a> Parser<'a> {
         term   : factor ((MUL | DIV) factor)*
         factor : INTEGER | LPAREN expr RPAREN
      */
-    pub fn expr(&mut self) -> u32 {
-        let mut result = self.term();
+    pub fn expr(&mut self) -> AST {
+        let mut node = self.term();
         loop {
+            let current_token = self.current_token.clone();
             match self.current_token.token {
                 TokenType::PLUS => {
                     self.eat(TokenType::PLUS);
-                    result += self.term();
                 },
                 TokenType::MINUS => {
                     self.eat(TokenType::MINUS);
-                    result -= self.term();
                 },
                 _ => break
             }
+            node = AST::new(current_token, vec![node, self.term()]);
         }
-        return result;
+        node
     }
 
     // term   : factor ((MUL | DIV) factor)*
-    pub fn term(&mut self) -> u32 {
-        let mut result = self.factor();
+    pub fn term(&mut self) -> AST {
+        let mut node = self.factor();
         loop {
-            match self.current_token.token {
+            let current_token = self.current_token.clone();
+            match current_token.token {
                 TokenType::MUL => {
                     self.eat(TokenType::MUL);
-                    result *= self.factor();
                 },
                 TokenType::DIV => {
                     self.eat(TokenType::DIV);
-                    result /= self.factor();
                 },
                 _ => break
             }
+            node = AST::new(current_token, vec![node, self.factor()])
         }
-        return result;
+        node
+    }
+
+    pub fn parse(&mut self) -> AST {
+        self.expr()
     }
 }

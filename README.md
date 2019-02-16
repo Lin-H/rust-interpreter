@@ -23,3 +23,10 @@ pub struct Interpreter<'a> {
 enum类型的变量比较相等，可能需要derive PartialEq
 
 读引用可以有多个，mut引用只能同时有一个，经过修改后的变量的读引用需要重新赋值，或重新获取
+
+变量自身mut跟变量的值mut是不一样的，比如这两行代码就有差别
+
+```rs
+let parser = &mut parser::Parser::new(&mut lex);
+let mut parser = &mut parser::Parser::new(&mut lex);
+```
