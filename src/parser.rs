@@ -27,19 +27,26 @@ impl<'a> Parser<'a> {
             panic!("eat error")
         }
     }
-    // factor : INTEGER | LPAREN expr RPAREN
+    // factor : (PLUS | MINUS) factor | INTEGER | LPAREN expr RPAREN
     pub fn factor(&mut self) -> AST {
         let token = self.current_token.clone();
-        if token.token == TokenType::INTEGER {
-            self.eat(TokenType::INTEGER);
-            return AST::new(token, vec![]);
-        } else if token.token == TokenType::LPAREN {
-            self.eat(TokenType::LPAREN);
-            let result = self.expr();
-            self.eat(TokenType::RPAREN);
-            return result;
+        match token.token {
+            TokenType::PLUS | TokenType::MINUS => {
+                self.eat(token.token);
+                return AST::new(token, vec![self.factor()]);
+            },
+            TokenType::INTEGER => {
+                self.eat(TokenType::INTEGER);
+                return AST::new(token, vec![]);
+            },
+            TokenType::LPAREN => {
+                self.eat(TokenType::LPAREN);
+                let result = self.expr();
+                self.eat(TokenType::RPAREN);
+                return result;
+            },
+            _ => panic!("factor error")
         }
-        panic!("factor error");
     }
     /*
     expr:
@@ -48,7 +55,7 @@ impl<'a> Parser<'a> {
 
         expr   : term ((PLUS | MINUS) term)*
         term   : factor ((MUL | DIV) factor)*
-        factor : INTEGER | LPAREN expr RPAREN
+        factor : (PLUS | MINUS) factor | INTEGER | LPAREN expr RPAREN
      */
     pub fn expr(&mut self) -> AST {
         let mut node = self.term();
